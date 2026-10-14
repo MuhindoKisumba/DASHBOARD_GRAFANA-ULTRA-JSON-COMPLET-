@@ -1,0 +1,115 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "panels": [
+    {
+      "type": "stat",
+      "title": " Total Alerts",
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "rawSql": "SELECT COUNT(*) FROM alerts WHERE resolved = FALSE;",
+          "format": "table"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": " Critical Alerts",
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "rawSql": "SELECT COUNT(*) FROM alerts WHERE severity='CRITICAL';",
+          "format": "table"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": " Attacks Over Time",
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "rawSql": "SELECT timestamp as time, COUNT(*) FROM logs WHERE status='FAILED' GROUP BY timestamp ORDER BY time;",
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": " Top Attacker IPs",
+      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "rawSql": "SELECT source_ip, COUNT(*) as attempts FROM logs WHERE status='FAILED' GROUP BY source_ip ORDER BY attempts DESC LIMIT 10;",
+          "format": "table"
+        }
+      ]
+    },
+    {
+      "type": "piechart",
+      "title": " Attack Types",
+      "gridPos": { "x": 0, "y": 12, "w": 8, "h": 6 },
+      "targets": [
+        {
+          "rawSql": "SELECT event_type, COUNT(*) FROM logs GROUP BY event_type;",
+          "format": "table"
+        }
+      ]
+    },
+    {
+      "type": "geomap",
+      "title": " Attack Map (Geo)",
+      "gridPos": { "x": 8, "y": 12, "w": 16, "h": 8 },
+      "targets": [
+        {
+          "rawSql": "SELECT source_ip, COUNT(*) FROM logs GROUP BY source_ip;",
+          "format": "table"
+        }
+      ]
+    },
+    {
+      "type": "logs",
+      "title": " Live Logs",
+      "gridPos": { "x": 0, "y": 20, "w": 24, "h": 8 },
+      "targets": [
+        {
+          "rawSql": "SELECT timestamp as time, raw_log FROM logs ORDER BY timestamp DESC LIMIT 100;",
+          "format": "logs"
+        }
+      ]
+    },
+    {
+      "type": "bargauge",
+      "title": " Blocked IPs",
+      "gridPos": { "x": 0, "y": 28, "w": 12, "h": 6 },
+      "targets": [
+        {
+          "rawSql": "SELECT source_ip, COUNT(*) FROM alerts WHERE resolved=TRUE GROUP BY source_ip;",
+          "format": "table"
+        }
+      ]
+    },
+    {
+      "type": "heatmap",
+      "title": " Attack Frequency Heatmap",
+      "gridPos": { "x": 12, "y": 28, "w": 12, "h": 6 },
+      "targets": [
+        {
+          "rawSql": "SELECT date_trunc('hour', timestamp) as time, COUNT(*) FROM logs GROUP BY time;",
+          "format": "time_series"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["SIEM", "Cybersecurity"],
+  "templating": {
+    "list": []
+  },
+  "title": " ULTRA SIEM DASHBOARD",
+  "version": 1
+}
